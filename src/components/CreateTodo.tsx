@@ -37,13 +37,9 @@ export const CreateTodo = () => {
             {
               onSuccess: (data) => {
                 api.todos.getTodos.setQueryData(["todos"], (oldData) => {
-                  //                 This gives a ts error ^^^^^^^^^^^^^^
-                  // Type '{ id: string; name: string; completed: boolean; createdAt: Date; updatedAt: Date; }[]' is missing the following properties from type '{ status: 200; body: { id: string; name: string; completed: boolean; createdAt: Date; updatedAt: Date; }[]; headers: Headers; }': status, body, headers
                   setText("");
-                  if (oldData) {
-                    return [...oldData.body, data.body];
-                  }
-                  return [data.body];
+                  if (!oldData) return undefined;
+                  return { ...oldData, body: [...oldData.body, data.body] };
                 });
               },
             }

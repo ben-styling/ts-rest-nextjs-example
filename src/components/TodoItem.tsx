@@ -25,12 +25,13 @@ export const TodoItem = ({ todo }: { todo: Todo }) => {
               {
                 onSuccess: (data) => {
                   api.todos.getTodos.setQueryData(["todos"], (oldData) => {
-                    //                   This gives a ts error ^^^^^^^^^^^^^^
-                    // Type '{ id: string; name: string; completed: boolean; createdAt: Date; updatedAt: Date; }[]' is not assignable to type '{ status: 200; body: { id: string; name: string; completed: boolean; createdAt: Date; updatedAt: Date; }[]; headers: Headers; }'
-                    if (!oldData) return [];
-                    return oldData.body.map((t) =>
-                      t.id === todo.id ? data.body : t
-                    );
+                    if (!oldData) return undefined;
+                    return {
+                      ...oldData,
+                      body: oldData?.body.map((t) =>
+                        t.id === todo.id ? data.body : t
+                      ),
+                    };
                   });
                 },
               }
@@ -49,10 +50,11 @@ export const TodoItem = ({ todo }: { todo: Todo }) => {
             {
               onSuccess: () => {
                 api.todos.getTodos.setQueryData(["todos"], (oldData) => {
-                  //                 This gives a ts error ^^^^^^^^^^^^^^
-                  // Type '{ id: string; name: string; completed: boolean; createdAt: Date; updatedAt: Date; }[]' is missing the following properties from type '{ status: 200; body: { id: string; name: string; completed: boolean; createdAt: Date; updatedAt: Date; }[]; headers: Headers; }': status, body, headers
-                  if (!oldData) return [];
-                  return oldData.body.filter((t) => t.id === todo.id);
+                  if (!oldData) return undefined;
+                  return {
+                    ...oldData,
+                    body: oldData?.body.filter((t) => t.id !== todo.id),
+                  };
                 });
               },
             }
