@@ -1,17 +1,15 @@
 "use client";
+import { client } from "@/lib/queryClient";
 import { TodoItem } from "./TodoItem";
 
 export const TodoList = () => {
-  const todos = [
-    {
-      name: "test",
-      completed: false,
-    },
-  ];
+  const { data } = client.todos.getTodos.useQuery(["todos"]);
+  if (!data) return <>Loading...</>;
+  if (data.status !== 200) return <>An error occurred</>;
   return (
     <>
-      {todos.map((todo) => {
-        return <TodoItem todo={todo} />;
+      {data.body.map((todo) => {
+        return <TodoItem key={todo.id} todo={todo} />;
       })}
     </>
   );
